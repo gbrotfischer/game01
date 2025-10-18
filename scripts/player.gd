@@ -8,6 +8,7 @@ signal coin_collected
 @export_subgroup("Properties")
 @export var movement_speed = 250
 @export var jump_strength = 7
+@export var checkpoint_manager_path: NodePath
 
 var movement_velocity: Vector3
 var rotation_direction: float
@@ -19,6 +20,7 @@ var jump_single = true
 var jump_double = true
 
 var coins = 0
+var checkpoint_manager: CheckpointManager
 
 @onready var particles_trail = $ParticlesTrail
 @onready var sound_footsteps = $SoundFootsteps
@@ -26,6 +28,12 @@ var coins = 0
 @onready var animation = $Character/AnimationPlayer
 
 # Functions
+
+func _ready() -> void:
+        if checkpoint_manager_path != NodePath():
+                checkpoint_manager = get_node_or_null(checkpoint_manager_path)
+                if checkpoint_manager:
+                        checkpoint_manager.register_player(self)
 
 func _physics_process(delta):
 
@@ -55,8 +63,11 @@ func _physics_process(delta):
 
 	# Falling/respawning
 
-	if position.y < -10:
-		get_tree().reload_current_scene()
+        if position.y < -10:
+                if checkpoint_manager and (checkpoint_manager.has_checkpoint() or checkpoint_manager.player):
+                        checkpoint_manager.respawn_player()
+                else:
+                        get_tree().reload_current_scene()
 
 	# Animation for scale (jumping and landing)
 
