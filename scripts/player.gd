@@ -30,10 +30,10 @@ var checkpoint_manager: CheckpointManager
 # Functions
 
 func _ready() -> void:
-        if checkpoint_manager_path != NodePath():
-                checkpoint_manager = get_node_or_null(checkpoint_manager_path)
-                if checkpoint_manager:
-                        checkpoint_manager.register_player(self)
+	if checkpoint_manager_path != NodePath():
+		checkpoint_manager = get_node_or_null(checkpoint_manager_path)
+		if checkpoint_manager:
+			checkpoint_manager.register_player(self)
 
 func _physics_process(delta):
 
